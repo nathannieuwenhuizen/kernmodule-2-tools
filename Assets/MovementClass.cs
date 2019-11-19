@@ -4,12 +4,12 @@ using UnityEngine;
 [RequireComponent(typeof(BoxCollider2D))]
 public class MovementClass : MonoBehaviour
 {
-private float walkSpeed = 20f; 
+public float walkSpeed = 20f; 
 private float friction = 0.1f; 
-[SerializeField] private float jumpSpeed = 5f; 
-private float gravityScale = 0.1f; 
-private float maxFallSpeed = 3f; 
-private float justInTimeDurationOnGround = 100f;
+public float jumpSpeed = 5f; 
+public float gravityScale = 0.1f; 
+public float maxFallSpeed = 3f; 
+private float justInTimeDurationOnGround = .1f;
 	private Vector2 deltaMovement = new Vector2();
 	private Rigidbody2D rb; 
 	private bool inAir = true;

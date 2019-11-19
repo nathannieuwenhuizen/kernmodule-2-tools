@@ -8,7 +8,7 @@ using UnityEditor;
 
 public class CharacterMaker : MonoBehaviour
 {
-    public static void GenerateScript(ClassData _data)
+    public static void GenerateScript(ClassData _data, bool newObject = false)
     {
         Debug.Log("generate...");
 
@@ -27,8 +27,13 @@ public class CharacterMaker : MonoBehaviour
             Debug.Log("Generated!");
         }
 
-        MakeGameObject(_data);
-        
+        if (newObject)
+        {
+            MakeGameObject(_data);
+        } else
+        {
+
+        }
     }
     public static void Include(StringBuilder sb)
     {
@@ -45,11 +50,11 @@ public class CharacterMaker : MonoBehaviour
     public static void Body(StringBuilder sb, ClassData _data)
     {
         Debug.Log("friction " +FloattoString(_data.friction));   
-        sb.AppendLine($"private float walkSpeed = {FloattoString(_data.walkspeed)}; ");
+        sb.AppendLine($"public float walkSpeed = {FloattoString(_data.walkspeed)}; ");
         sb.AppendLine($"private float friction = {FloattoString(_data.friction)}; ");
-        sb.AppendLine($"[SerializeField] private float jumpSpeed = {FloattoString(_data.jumpSpeed)}; ");
-        sb.AppendLine($"private float gravityScale = {FloattoString(_data.gravityScale)}; ");
-        sb.AppendLine($"private float maxFallSpeed = {FloattoString(_data.maxFallSpeed)}; ");
+        sb.AppendLine($"public float jumpSpeed = {FloattoString(_data.jumpSpeed)}; ");
+        sb.AppendLine($"public float gravityScale = {FloattoString(_data.gravityScale)}; ");
+        sb.AppendLine($"public float maxFallSpeed = {FloattoString(_data.maxFallSpeed)}; ");
         sb.AppendLine($"private float justInTimeDurationOnGround = {FloattoString(_data.justInTimeDurationOnGround)};");
         sb.AppendLine("\tprivate Vector2 deltaMovement = new Vector2();");
         sb.AppendLine("\tprivate Rigidbody2D rb; ");

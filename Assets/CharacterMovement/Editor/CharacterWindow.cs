@@ -43,7 +43,7 @@ public class CharacterWindow : EditorWindow
         data.jumpSpeed = EditorGUILayout.Slider("Jump speed", data.jumpSpeed, 0, 100);
         data.gravityScale = EditorGUILayout.Slider("Gravity scale", data.gravityScale, 0, 1);
         data.maxFallSpeed = EditorGUILayout.Slider("Max fall speed", data.maxFallSpeed, 0, 100);
-        data.justInTimeDurationOnGround = EditorGUILayout.Slider("Just in time on ground", data.justInTimeDurationOnGround, 0, 300);
+        data.justInTimeDurationOnGround = EditorGUILayout.Slider("Just in time on ground", data.justInTimeDurationOnGround, 0, 3);
         
 
         groupEnabled = EditorGUILayout.BeginToggleGroup("Optional Settings", groupEnabled);
@@ -56,6 +56,12 @@ public class CharacterWindow : EditorWindow
         if (GUILayout.Button("Generate script"))
         {
             CharacterMaker.GenerateScript(data);
+            AssetDatabase.Refresh();
+        }
+
+        if (GUILayout.Button("Generate script with object"))
+        {
+            CharacterMaker.GenerateScript(data, true);
             AssetDatabase.Refresh();
         }
 
