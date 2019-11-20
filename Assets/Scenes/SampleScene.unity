@@ -129,10 +129,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 364563682}
+  - component: {fileID: 364563678}
   - component: {fileID: 364563681}
   - component: {fileID: 364563680}
   - component: {fileID: 364563679}
-  - component: {fileID: 364563678}
   m_Layer: 0
   m_Name: character
   m_TagString: Untagged
@@ -152,10 +152,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f87babd74cb11d4fa44a578df4b038f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  walkSpeed: 13.2
-  jumpSpeed: 30
-  gravityScale: 1.22
-  maxFallSpeed: 61.77
+  walkSpeed: 9.371287
+  jumpSpeed: 18.000969
+  gravityScale: 0.62
+  maxFallSpeed: 200
+  justInTimeDurationOnGround: 0.1
 --- !u!61 &364563679
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -242,7 +243,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 0ff2ec86dec15284ebc0b180aa3f6475, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 0.6084906, b: 0.6084906, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -260,7 +261,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 364563677}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -5.1, y: -3.94, z: 0}
+  m_LocalPosition: {x: 0.49, y: 1.99, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -764,7 +765,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a6e81a55e1d6000439b434ba3b1c82cb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  walkSpeed: 20
   jumpSpeed: 5
+  gravityScale: 0.1
+  maxFallSpeed: 3
+  justInTimeDurationOnGround: 100
 --- !u!61 &1683359667
 BoxCollider2D:
   m_ObjectHideFlags: 0

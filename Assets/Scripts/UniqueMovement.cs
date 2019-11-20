@@ -7,15 +7,14 @@ public class UniqueMovement : MonoBehaviour
 {
 
     //inspector values
-    private float walkSpeed = 20f;
+    public float walkSpeed = 20f;
     private float friction = 0.1f;
 
     //jump
-    [SerializeField]
-    private float jumpSpeed = 5f;
-    private float gravityScale = 0.1f;
-    private float maxFallSpeed = 3f;
-    private float justInTimeDurationOnGround = 100f;
+    public float jumpSpeed = 5f;
+    public float gravityScale = 0.1f;
+    public float maxFallSpeed = 3f;
+    public float justInTimeDurationOnGround = 0.1f;
 
     //baisc values
     private Vector2 deltaMovement = new Vector2();

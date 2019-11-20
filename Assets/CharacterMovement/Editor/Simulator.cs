@@ -3,21 +3,27 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
+
+/// <summary>
+/// Simulates the sprite using a list of vector 3 coordinates
+/// </summary>
 public class Simulator : Editor
 {
-
     private IEnumerator coroutine;
     private bool isRunning;
+
     private GameObject simulatedObj;
     private List<Vector3> path;
+
+    //begins simulating
     public void SimulatePath(List<Vector3> _path, GameObject _simulatedobj)
     {
         if (isRunning)
         {
-            closeSimulation();
+            CloseSimulation();
         }
         path = _path;
-        simulatedObj = Instantiate(_simulatedobj); //TODO change obj to obj,transform!
+        simulatedObj = Instantiate(_simulatedobj);
         simulatedObj.name = "simulated object";
         DestroyImmediate(simulatedObj.GetComponent<MovementClass>());
 
@@ -31,10 +37,13 @@ public class Simulator : Editor
         EditorApplication.update += EditorUpdate;
         coroutine = SimulatingPath(path);
     }
+
+    //this is the editor update call only called when the ienumerator is running
     private void EditorUpdate()
     {
         coroutine.MoveNext();
     }
+    //the coroutine itself, note: it cant do a second delay.
     private IEnumerator SimulatingPath(List<Vector3> path)
     {
         isRunning = true;
@@ -45,9 +54,11 @@ public class Simulator : Editor
             simulatedObj.transform.position = path[index];
             yield return new WaitForFixedUpdate();
         }
-        closeSimulation();
+        CloseSimulation();
     }
-    private void closeSimulation()
+
+    //closes the simulation, disabling the editorupdate and destroys the simulated object
+    private void CloseSimulation()
     {
         DestroyImmediate(simulatedObj);
         EditorApplication.update -= EditorUpdate;
