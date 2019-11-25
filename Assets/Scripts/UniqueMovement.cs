@@ -11,6 +11,7 @@ public class UniqueMovement : MonoBehaviour
     private float friction = 0.1f;
 
     //jump
+    public bool jumpEnabled = true;
     public float jumpSpeed = 5f;
     public float gravityScale = 0.1f;
     public float maxFallSpeed = 3f;
@@ -22,6 +23,16 @@ public class UniqueMovement : MonoBehaviour
     public float doubleJumpSpeed = 10f;
     private int doubleJumpIndex = 0;
 
+    //sprite
+    public bool faceToDirection = true;
+    public Vector3 originScale;
+
+    //crouch
+    public bool crouchEnabled = false;
+    public bool crouching = false;
+    public float crouchSpeed = 4f;
+    public float crouchScale = 0.5f;
+
     //baisc values
     private Vector2 deltaMovement = new Vector2();
     private Rigidbody2D rb;
@@ -29,12 +40,26 @@ public class UniqueMovement : MonoBehaviour
 
     void Start()
     {
+        originScale = transform.localScale;
+
         rb = GetComponent<Rigidbody2D>();
         rb.gravityScale = 0;
     }
     private void Move(float _input)
     {
-        deltaMovement.x = _input * walkSpeed;
+        if (crouching)
+        {
+            deltaMovement.x = _input * crouchSpeed;
+        }
+        else
+        {
+            deltaMovement.x = _input * walkSpeed;
+        }
+
+        if (deltaMovement.x != 0)
+        {
+            transform.localScale = new Vector2(deltaMovement.x < 0 ? -originScale.x : originScale.x, transform.localScale.y);
+        }
     }
     private void FixedUpdate()
     {
@@ -43,7 +68,6 @@ public class UniqueMovement : MonoBehaviour
             deltaMovement.y = Mathf.Max(-maxFallSpeed, deltaMovement.y - gravityScale);
         }
         rb.velocity = deltaMovement;
-        //transform.Translate(deltaMovement);
     }
     private void OnCollisionEnter2D(Collision2D collision)
     {
@@ -65,7 +89,7 @@ public class UniqueMovement : MonoBehaviour
     private void Jump()
     {
         //normal jump
-        if (!inAir)
+        if (!inAir && jumpEnabled)
         {
             deltaMovement.y = jumpSpeed;
             inAir = true;
@@ -80,11 +104,25 @@ public class UniqueMovement : MonoBehaviour
 
     private void Update()
     {
+
         Move(Input.GetAxis("Horizontal"));
-        if (Input.GetButtonDown("Fire1"))
+        if (Input.GetKeyDown(KeyCode.W))
         {
             Jump();
         }
+
+        if (Input.GetKeyDown(KeyCode.S))
+        {
+            crouching = true;
+        }
+
+        if (Input.GetKeyUp(KeyCode.S))
+        {
+            crouching = false;
+        }
+        transform.localScale = new Vector2( transform.localScale.x, originScale.y * (crouching ? crouchScale : 1));
+
+
     }
 
 }

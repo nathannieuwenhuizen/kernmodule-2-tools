@@ -8,7 +8,6 @@ namespace CharacterMovementCreator
     /// <summary>
     /// For now this is the main editor class
     /// </summary>
-    /// 
     [CustomEditor(typeof(UniqueMovement))]
     public class Selector : Editor
     {
@@ -17,6 +16,8 @@ namespace CharacterMovementCreator
 
         static readonly float fps = 60;
 
+
+        static List<Vector3> selectedArc;
         static List<Vector3> jumpArc;
         static List<Vector3> doubleJumpArc;
 
@@ -29,12 +30,35 @@ namespace CharacterMovementCreator
             Handles.Label(movementClass.transform.position, "Start point");
 
             //draw idle jump arc
-            PathCreator.DrawIdleJump(movementClass);
-            PathCreator.DrawDoubleIdleJump(movementClass);
+            //PathCreator.DrawIdleJump(movementClass);
+            //.DrawDoubleIdleJump(movementClass);
 
             //draw normal jump arc
-            jumpArc = PathCreator.JumpArc(movementClass);
-            doubleJumpArc = PathCreator.DoubleJumpArc(movementClass);
+            //jumpArc = PathCreator.JumpArc(movementClass);
+            //doubleJumpArc = PathCreator.DoubleJumpArc(movementClass);
+
+            if (guibox.selectedSetting == advancedSettings.jump)
+            {
+                //draw jump arc
+                PathCreator.DrawIdleJump(movementClass);
+                jumpArc = PathCreator.JumpArc(movementClass);
+                selectedArc = jumpArc;
+
+            }
+            if (guibox.selectedSetting == advancedSettings.doubleJump)
+            {
+                PathCreator.DrawDoubleIdleJump(movementClass);
+                doubleJumpArc = PathCreator.DoubleJumpArc(movementClass);
+                selectedArc = doubleJumpArc;
+            }
+            if (guibox.selectedSetting == advancedSettings.dash)
+            {
+
+            }
+            if (guibox.selectedSetting == advancedSettings.crouch)
+            {
+
+            }
 
         }
 
@@ -107,13 +131,6 @@ namespace CharacterMovementCreator
             }
             jumpMenu.Footer();
 
-            bool build = GUILayout.Button("Build Object");
-            if (build)
-            {
-                //myScript.BuildObject();
-            }
-
-            //serializedObject.Update();
 
             //DrawDefaultInspector();
             //var levelScript = target as LevelScript;
@@ -122,76 +139,76 @@ namespace CharacterMovementCreator
             //serializedObject.ApplyModifiedProperties();
         }
 
-
+        static public MyGUIBox guibox;
 
         public float vSbarValue;
         void OnSceneGUI()
         {
             var character = target as UniqueMovement;
 
-            Handles.BeginGUI();
-
-            GUI.Box(new Rect(0, 0, 150, 300), "Settings");
-
-            //vSbarValue = GUI.VerticalScrollbar(new Rect(0, 20, 150, 300), vSbarValue, 1.0F, 10.0F, 0.0F);
-            if (GUI.Button(new Rect(25, 225, 100, 30), "Simulate"))
+            if (guibox == null)
             {
-                if (simulator == null)
-                {
-                    simulator = new Simulator();
-                }
-                simulator.SimulatePath(jumpArc, character.gameObject);
+                guibox = new MyGUIBox();
             }
-            if (GUI.Button(new Rect(25, 180, 100, 30), "Place platforms"))
-            {
-                if (platformPlacer == null)
-                {
-                    platformPlacer = new PlatformPlacer();
-                }
-
-                List<Vector3> positions = new List<Vector3> { character.transform.position };
-                positions.Add(jumpArc[jumpArc.Count - 1]);
-                platformPlacer.PlacePlatformObjects(positions, character.GetComponent<BoxCollider2D>());
-            }
-
-
-            hSliderValue = GUI.HorizontalSlider(new Rect(25, 25, 100, 30), hSliderValue, 0.0F, 10.0F);
-            EditorGUIUtility.AddCursorRect(new Rect(20, 20, 140, 40), MouseCursor.Zoom);
-            Handles.EndGUI();
-
+            guibox.Draw(character);
+            guibox.simulating = simulating;
+            guibox.spawning = platformSpawning;
 
             var transform = character.transform;
-
-            using (var cc = new EditorGUI.ChangeCheckScope())
+            if (guibox.selectedSetting == advancedSettings.jump)
             {
-
-                Vector3 jumpHandeler =
-                Handles.PositionHandle(
-                    transform.position + new Vector3(PathCreator.xJumpDistance / 2, PathCreator.GetJumpUnits(character), 0),
-                    transform.rotation);
-                if (cc.changed)
+                using (var cc = new EditorGUI.ChangeCheckScope())
                 {
 
-                    //character.jumpSpeed = PathCreator.SetJumpUnits(jumpHandler.y - character.transform.position.y, character);
-                    //float handlerPos = (walkHandeler.x - transform.position.x); 
-
-                    character.jumpSpeed = PathCreator.SetJumpUnits(jumpHandeler.y - character.transform.position.y, character);
-                    changeWalkSpeed(character, Mathf.Max((jumpHandeler.x - transform.position.x), 0));
-
+                    Vector3 jumpHandeler =
+                    Handles.PositionHandle(
+                        transform.position + new Vector3(PathCreator.xJumpDistance / 2, PathCreator.GetJumpUnits(character), 0),
+                        transform.rotation);
+                    if (cc.changed)
+                    {
+                        character.jumpSpeed = PathCreator.SetJumpUnits(jumpHandeler.y - character.transform.position.y, character);
+                        changeWalkSpeed(character, Mathf.Max((jumpHandeler.x - transform.position.x), 0));
+                    }
                 }
             }
-            using (var cc = new EditorGUI.ChangeCheckScope())
+            if (guibox.selectedSetting == advancedSettings.doubleJump)
             {
-
-                Vector3 doubleJumpHandeler =
-                Handles.PositionHandle(
-                    transform.position + new Vector3(0, PathCreator.GetDoubleJumpUnits(character), 0),
-                    transform.rotation);
-                if (cc.changed)
+                using (var cc = new EditorGUI.ChangeCheckScope())
                 {
-                    character.doubleJumpSpeed = PathCreator.SetJumpUnits(doubleJumpHandeler.y - (character.transform.position.y + PathCreator.GetJumpUnits(character)), character);
+
+                    Vector3 doubleJumpHandeler =
+                    Handles.PositionHandle(
+                        transform.position + new Vector3(0, PathCreator.GetDoubleJumpUnits(character), 0),
+                        transform.rotation);
+                    if (cc.changed)
+                    {
+                        character.doubleJumpSpeed = PathCreator.SetJumpUnits(doubleJumpHandeler.y - (character.transform.position.y + PathCreator.GetJumpUnits(character)), character);
+                    }
                 }
             }
+        }
+        public void simulating()
+        {
+            if (simulator == null)
+            {
+                simulator = new Simulator();
+            }
+            var character = target as UniqueMovement;
+            if (selectedArc != null)
+            {
+                simulator.SimulatePath(selectedArc, character.gameObject);
+            }
+        }
+        public void platformSpawning()
+        {
+            if (platformPlacer == null)
+            {
+                platformPlacer = new PlatformPlacer();
+            }
+            var character = target as UniqueMovement;
+            List<Vector3> positions = new List<Vector3> { character.transform.position };
+            positions.Add(selectedArc[selectedArc.Count - 1]);
+            platformPlacer.PlacePlatformObjects(positions, character.GetComponent<BoxCollider2D>());
         }
 
         //changes the walkspeed of the movement by selection

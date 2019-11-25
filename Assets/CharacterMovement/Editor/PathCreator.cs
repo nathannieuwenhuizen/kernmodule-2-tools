@@ -14,7 +14,7 @@ namespace CharacterMovementCreator
         static float fps = 54;
         static public float xJumpDistance;
         static public float xDoubleJumpDistance;
-
+        static public float xWalkDistance;
         //Calculates and draws the jump arc
         static public List<Vector3> JumpArc(UniqueMovement movementClass)
         {
@@ -72,6 +72,24 @@ namespace CharacterMovementCreator
             return positions;
         }
 
+        static List<Vector3> GetWalkArc(UniqueMovement movementClass)
+        {
+            Vector3 pos = movementClass.transform.position;
+            float deltaY = movementClass.jumpSpeed;
+            float deltaX = movementClass.walkSpeed;
+            List<Vector3> positions = new List<Vector3>();
+
+            int framesPassed = 0;
+            while (framesPassed < fps) //1 sec
+            {
+                framesPassed++;
+                pos.x += deltaX / fps;
+                positions.Add(pos);
+            }
+            xWalkDistance = pos.x - movementClass.transform.position.x;
+            return positions;
+
+        }
 
         //calculates and returns the double jump arc of a given movement
         static List<Vector3> GetDoubleJumpArc(UniqueMovement movementClass)

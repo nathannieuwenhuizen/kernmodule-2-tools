@@ -28,11 +28,11 @@ namespace CharacterMovementCreator
             //instantiates the platforms
             for (int i = 0; i < positions.Count; i++)
             {
-                PlaceGround(positions[i]);
+                PlaceGround(positions[i], true);
             }
         }
 
-        private void PlaceGround(Vector3 pos)
+        private void PlaceGround(Vector3 pos, bool rounded = false)
         {
             //declaration
             GameObject obj = new GameObject("platform");
@@ -48,13 +48,27 @@ namespace CharacterMovementCreator
             //position and hierarchy
             obj.transform.SetParent(parent.transform);
             pos.y -= heightOffset / 2 + obj.GetComponent<BoxCollider2D>().size.y / 2;
-            obj.transform.position = pos;
-
+            if (rounded)
+            {
+                obj.transform.position = RoundToDecimals(pos, 2);
+            } else
+            {
+                obj.transform.position = pos;
+            }
         }
         private void ClearPlatforms()
         {
 
         }
+
+        //round to decimals
+        static Vector3 RoundToDecimals(Vector3 val, int amount)
+        {
+            float pow = Mathf.Pow(10, amount);
+            return new Vector3(Mathf.Round(val.x * pow) / pow, Mathf.Round(val.y * pow) / pow, Mathf.Round(val.z * pow) / pow);
+        }
+
+
 
     }
 
