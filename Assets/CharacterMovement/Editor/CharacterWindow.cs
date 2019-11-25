@@ -55,13 +55,13 @@ public class CharacterWindow : EditorWindow
         //generate
         if (GUILayout.Button("Generate script"))
         {
-            CharacterMaker.GenerateScript(data);
+            //CharacterMaker.GenerateScript(data);
             AssetDatabase.Refresh();
         }
 
         if (GUILayout.Button("Generate script with object"))
         {
-            CharacterMaker.GenerateScript(data, true);
+            //CharacterMaker.GenerateScript(data, true);
             AssetDatabase.Refresh();
         }
 

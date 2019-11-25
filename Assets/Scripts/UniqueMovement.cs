@@ -16,6 +16,12 @@ public class UniqueMovement : MonoBehaviour
     public float maxFallSpeed = 3f;
     public float justInTimeDurationOnGround = 0.1f;
 
+    //doublejumps
+    public bool doubleJumpEnabled = true;
+    public int amountOfDoubleJumps = 30; 
+    public float doubleJumpSpeed = 10f;
+    private int doubleJumpIndex = 0;
+
     //baisc values
     private Vector2 deltaMovement = new Vector2();
     private Rigidbody2D rb;
@@ -44,6 +50,7 @@ public class UniqueMovement : MonoBehaviour
         StopAllCoroutines();
         inAir = false;
         deltaMovement.y = 0;
+        doubleJumpIndex = 0;
     }
     private void OnCollisionExit2D(Collision2D collision)
     {
@@ -57,10 +64,17 @@ public class UniqueMovement : MonoBehaviour
 
     private void Jump()
     {
+        //normal jump
         if (!inAir)
         {
             deltaMovement.y = jumpSpeed;
             inAir = true;
+        }
+        //double jump 
+        else if (doubleJumpEnabled && doubleJumpIndex < amountOfDoubleJumps)
+        {
+            doubleJumpIndex++;
+            deltaMovement.y = doubleJumpSpeed;
         }
     }
 
