@@ -16,12 +16,10 @@ namespace CharacterMovementCreator
 
         static readonly float fps = 60;
 
-
         static List<Vector3> selectedArc;
         static List<Vector3> jumpArc;
         static List<Vector3> doubleJumpArc;
-
-        float hSliderValue = 0f;
+        static List<Vector3> walkArc;
 
         [DrawGizmo(GizmoType.Pickable | GizmoType.Selected)]
         static void DrawGizmosSelected(UniqueMovement movementClass, GizmoType gizmoType)
@@ -37,6 +35,10 @@ namespace CharacterMovementCreator
             //jumpArc = PathCreator.JumpArc(movementClass);
             //doubleJumpArc = PathCreator.DoubleJumpArc(movementClass);
 
+            if (guibox.selectedSetting == advancedSettings.general)
+            {
+                selectedArc = PathCreator.WalkArc(movementClass);
+            }
             if (guibox.selectedSetting == advancedSettings.jump)
             {
                 //draw jump arc
@@ -53,11 +55,11 @@ namespace CharacterMovementCreator
             }
             if (guibox.selectedSetting == advancedSettings.dash)
             {
-
+                selectedArc = PathCreator.DashArc(movementClass);
             }
             if (guibox.selectedSetting == advancedSettings.crouch)
             {
-
+                selectedArc = PathCreator.CrouchArc(movementClass);
             }
 
         }
@@ -73,7 +75,8 @@ namespace CharacterMovementCreator
         }
         public override void OnInspectorGUI()
         {
-            DrawDefaultInspector();
+            //DrawDefaultInspector();
+            /*
             UniqueMovement character = (UniqueMovement)target;
 
             //EditorGUILayout.IntSlider(0, 0, 18);
@@ -137,6 +140,7 @@ namespace CharacterMovementCreator
             //levelScript.experience = EditorGUILayout.IntField("Experience", levelScript.experience);
             //EditorGUILayout.LabelField("Level", levelScript.Level + "");
             //serializedObject.ApplyModifiedProperties();
+            */
         }
 
         static public MyGUIBox guibox;
@@ -183,6 +187,36 @@ namespace CharacterMovementCreator
                     if (cc.changed)
                     {
                         character.doubleJumpSpeed = PathCreator.SetJumpUnits(doubleJumpHandeler.y - (character.transform.position.y + PathCreator.GetJumpUnits(character)), character);
+                    }
+                }
+            }
+            if (guibox.selectedSetting == advancedSettings.general)
+            {
+                using (var cc = new EditorGUI.ChangeCheckScope())
+                {
+
+                    Vector3 walkHandeler =
+                    Handles.PositionHandle(
+                        transform.position + new Vector3(PathCreator.xWalkDistance, 0, 0),
+                        transform.rotation);
+                    if (cc.changed)
+                    {
+                        character.walkSpeed = PathCreator.SetWalkUnits(walkHandeler.x - character.transform.position.x, character);
+                    }
+                }
+            }
+            if (guibox.selectedSetting == advancedSettings.dash)
+            {
+                using (var cc = new EditorGUI.ChangeCheckScope())
+                {
+
+                    Vector3 dashHandeler =
+                    Handles.PositionHandle(
+                        transform.position + new Vector3(PathCreator.xDashDistance, 0, 0),
+                        transform.rotation);
+                    if (cc.changed)
+                    {
+                        character.dashSpeed = PathCreator.SetDashUnits(dashHandeler.x - character.transform.position.x, character);
                     }
                 }
             }

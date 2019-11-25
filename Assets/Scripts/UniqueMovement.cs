@@ -1,6 +1,13 @@
 ﻿using System.Collections;
 using UnityEngine;
 
+
+public enum dashModes
+{
+    horizontalLine,
+    cross,
+    every_angle
+}
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(BoxCollider2D))]
 public class UniqueMovement : MonoBehaviour
@@ -38,6 +45,13 @@ public class UniqueMovement : MonoBehaviour
     private Rigidbody2D rb;
     private bool inAir = true;
 
+    //dash
+    public bool enableDash = false;
+    public float dashSpeed = 50f;
+    public float dashDuration = 0.2f;
+    private bool dashing = false;
+    public dashModes dashMode = dashModes.horizontalLine;
+
     void Start()
     {
         originScale = transform.localScale;
@@ -47,6 +61,8 @@ public class UniqueMovement : MonoBehaviour
     }
     private void Move(float _input)
     {
+        if (dashing) { return; }
+
         if (crouching)
         {
             deltaMovement.x = _input * crouchSpeed;
@@ -63,7 +79,7 @@ public class UniqueMovement : MonoBehaviour
     }
     private void FixedUpdate()
     {
-        if (inAir)
+        if (inAir && !dashing)
         {
             deltaMovement.y = Mathf.Max(-maxFallSpeed, deltaMovement.y - gravityScale);
         }
@@ -101,6 +117,63 @@ public class UniqueMovement : MonoBehaviour
             deltaMovement.y = doubleJumpSpeed;
         }
     }
+    private void Dash(Vector2 input)
+    {
+        if (dashing) { return; }
+        dashing = true;
+
+        deltaMovement = new Vector2(0, 0);
+        switch (dashMode) {
+            case (dashModes.horizontalLine):
+                if (input.x < 0)
+                {
+                    deltaMovement.x = -dashSpeed;
+                } else
+                {
+                    deltaMovement.x = dashSpeed;
+                }
+                break;
+            case (dashModes.cross):
+                bool vertical = Mathf.Abs(input.x) < Mathf.Abs(input.y);
+                if (vertical)
+                {
+                    if (input.y < 0)
+                    {
+                        deltaMovement.y = -dashSpeed;
+                    }
+                    else
+                    {
+                        deltaMovement.y = dashSpeed;
+                    }
+                }
+                else
+                {
+                    if (input.x < 0)
+                    {
+                        deltaMovement.x = -dashSpeed;
+                    }
+                    else
+                    {
+                        deltaMovement.x = dashSpeed;
+                    }
+                }
+                break;
+            case (dashModes.every_angle):
+                Vector2 normalized = input.normalized;
+                deltaMovement.x = normalized.x * dashSpeed;
+                deltaMovement.y = normalized.y * dashSpeed;
+                break;
+        }
+        StartCoroutine(Dashing());
+    }
+    IEnumerator Dashing()
+    {
+        yield return new WaitForSeconds(dashDuration);
+        deltaMovement.x = 0;
+        deltaMovement.y = 0;
+        dashing = false;
+
+    }
 
     private void Update()
     {
@@ -111,7 +184,7 @@ public class UniqueMovement : MonoBehaviour
             Jump();
         }
 
-        if (Input.GetKeyDown(KeyCode.S))
+        if (Input.GetKeyDown(KeyCode.S) && !inAir)
         {
             crouching = true;
         }
@@ -120,6 +193,11 @@ public class UniqueMovement : MonoBehaviour
         {
             crouching = false;
         }
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            Dash(new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical")));
+        }
+
         transform.localScale = new Vector2( transform.localScale.x, originScale.y * (crouching ? crouchScale : 1));
 
 

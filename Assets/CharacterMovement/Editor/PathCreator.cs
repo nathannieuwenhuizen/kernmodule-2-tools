@@ -15,10 +15,12 @@ namespace CharacterMovementCreator
         static public float xJumpDistance;
         static public float xDoubleJumpDistance;
         static public float xWalkDistance;
+        static public float xDashDistance;
+        static public float xCrouchDistance;
         //Calculates and draws the jump arc
         static public List<Vector3> JumpArc(UniqueMovement movementClass)
         {
-            List<Vector3> positions = GetJumpArc(movementClass);
+            List<Vector3> positions = CalculateJumpArc(movementClass);
             using (new Handles.DrawingScope(Color.yellow))
             {
                 Handles.DrawAAPolyLine(positions.ToArray());
@@ -32,7 +34,7 @@ namespace CharacterMovementCreator
         //Calculates and draws the jump arc
         static public List<Vector3> DoubleJumpArc(UniqueMovement movementClass)
         {
-            List<Vector3> positions = GetDoubleJumpArc(movementClass);
+            List<Vector3> positions = CalculateDoubleJumpArc(movementClass);
             using (new Handles.DrawingScope(Color.yellow))
             {
                 Handles.DrawAAPolyLine(positions.ToArray());
@@ -43,8 +45,84 @@ namespace CharacterMovementCreator
             return positions;
         }
 
+        //Calculates and draws the walk arc
+        static public List<Vector3> WalkArc(UniqueMovement movementClass)
+        {
+            List<Vector3> positions = CalculateWalkArc(movementClass);
+            using (new Handles.DrawingScope(Color.yellow))
+            {
+                Handles.DrawAAPolyLine(positions.ToArray());
+                xWalkDistance = positions[positions.Count - 1].x - movementClass.transform.position.x;
+
+                LabelUnits("Walk distance (1 sec) ", positions[positions.Count - 1], xWalkDistance);
+            }
+            return positions;
+        }
+
+
+        //Calculates and draws the walk arc
+        static public List<Vector3> CrouchArc(UniqueMovement movementClass)
+        {
+            List<Vector3> positions = CalculateCrouchArc(movementClass);
+            using (new Handles.DrawingScope(Color.yellow))
+            {
+                Handles.DrawAAPolyLine(positions.ToArray());
+                xCrouchDistance = positions[positions.Count - 1].x - movementClass.transform.position.x;
+
+                LabelUnits("Crouch distance (1 sec) ", positions[positions.Count - 1], xCrouchDistance);
+            }
+            return positions;
+        }
+
+
+        //Calculates and draws the walk arc
+        static public List<Vector3> DashArc(UniqueMovement movementClass)
+        {
+            List<Vector3> positions = CalculateDashArc(movementClass);
+            using (new Handles.DrawingScope(Color.yellow))
+            {
+                if (movementClass.dashMode == dashModes.horizontalLine)
+                {
+                    Debug.Log("dash arc change");
+
+
+                    Vector3 beginPos = movementClass.transform.position;
+                    beginPos.x -= PathCreator.xDashDistance;
+                    Vector3 endPos = movementClass.transform.position;
+                    endPos.x += PathCreator.xDashDistance;
+                    Handles.DrawDottedLine(beginPos, endPos, 3);
+
+                }
+
+                if (movementClass.dashMode == dashModes.cross)
+                {
+                    Vector3 beginPos2 = movementClass.transform.position;
+                    beginPos2.x -= PathCreator.xDashDistance;
+                    Vector3 endPos2 = movementClass.transform.position;
+                    endPos2.x += PathCreator.xDashDistance;
+                    Handles.DrawDottedLine(beginPos2, endPos2, 3);
+
+                    beginPos2 = movementClass.transform.position;
+                    beginPos2.y -= PathCreator.xDashDistance;
+                    endPos2 = movementClass.transform.position;
+                    endPos2.y += PathCreator.xDashDistance;
+                    Handles.DrawDottedLine(beginPos2, endPos2, 3);
+
+                }
+                if (movementClass.dashMode == dashModes.every_angle)
+                {
+                    Handles.DrawWireDisc(movementClass.transform.position, Vector3.forward, xDashDistance);
+                }
+                //Handles.DrawAAPolyLine(positions.ToArray());
+                xCrouchDistance = positions[positions.Count - 1].x - movementClass.transform.position.x;
+
+                LabelUnits("Dash distance", positions[positions.Count - 1], xDashDistance);
+            }
+            return positions;
+        }
+
         //calculates and returns the jump arc of a given movement
-        static List<Vector3> GetJumpArc(UniqueMovement movementClass)
+        static List<Vector3> CalculateJumpArc(UniqueMovement movementClass)
         {
             Vector3 pos = movementClass.transform.position;
             float deltaY = movementClass.jumpSpeed;
@@ -72,7 +150,7 @@ namespace CharacterMovementCreator
             return positions;
         }
 
-        static List<Vector3> GetWalkArc(UniqueMovement movementClass)
+        static List<Vector3> CalculateWalkArc(UniqueMovement movementClass)
         {
             Vector3 pos = movementClass.transform.position;
             float deltaY = movementClass.jumpSpeed;
@@ -91,8 +169,44 @@ namespace CharacterMovementCreator
 
         }
 
+        static List<Vector3> CalculateDashArc(UniqueMovement movementClass)
+        {
+            Vector3 pos = movementClass.transform.position;
+            float deltaX = movementClass.dashSpeed;
+            List<Vector3> positions = new List<Vector3>();
+
+            int framesPassed = 0;
+            int totalFrames = (int)Mathf.Round(movementClass.dashDuration * fps);
+            while (framesPassed < totalFrames) //dash duration in frames
+            {
+                framesPassed++;
+                pos.x += deltaX / fps;
+                positions.Add(pos);
+            }
+            xDashDistance = pos.x - movementClass.transform.position.x;
+            return positions;
+
+        }
+        static List<Vector3> CalculateCrouchArc(UniqueMovement movementClass)
+        {
+            Vector3 pos = movementClass.transform.position;
+            float deltaX = movementClass.crouchSpeed;
+            List<Vector3> positions = new List<Vector3>();
+
+            int framesPassed = 0;
+            while (framesPassed < fps) //1 sec
+            {
+                framesPassed++;
+                pos.x += deltaX / fps;
+                positions.Add(pos);
+            }
+            xWalkDistance = pos.x - movementClass.transform.position.x;
+            return positions;
+
+        }
+
         //calculates and returns the double jump arc of a given movement
-        static List<Vector3> GetDoubleJumpArc(UniqueMovement movementClass)
+        static List<Vector3> CalculateDoubleJumpArc(UniqueMovement movementClass)
         {
             Vector3 pos = movementClass.transform.position;
             float deltaY = movementClass.jumpSpeed;
@@ -206,10 +320,25 @@ namespace CharacterMovementCreator
                         //doublejump
                         deltaY = movementClass.doubleJumpSpeed;
                         doublejumpIndex++;
+                        //Gizmos.DrawWireSphere(new Vector2(movementClass.transform.position.x, movementClass.transform.position.y + result), 0.125f);
+
                     }
                 }
             }
             return result;
+        }
+
+        //changes the speed of the character based of the val in units
+        static public float SetWalkUnits(float val, UniqueMovement movementClass)
+        {
+            return val;
+        }
+
+        //changes the speed of the character based of the val in units
+        static public float SetDashUnits(float val, UniqueMovement movementClass)
+        {
+
+            return val / movementClass.dashDuration;
         }
 
         //changes the speed of the character based of the val in units

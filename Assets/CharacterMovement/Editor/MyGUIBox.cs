@@ -70,7 +70,7 @@ namespace CharacterMovementCreator
             currentPos += lineSpace;
             character.doubleJumpEnabled = GUI.Toggle(new Rect(pos.x, currentPos, size.x, 15), character.doubleJumpEnabled, "double jump");
             currentPos += lineSpace;
-            character.doubleJumpEnabled = GUI.Toggle(new Rect(pos.x, currentPos, size.x, 15), character.doubleJumpEnabled, "dash");
+            character.enableDash = GUI.Toggle(new Rect(pos.x, currentPos, size.x, 15), character.enableDash, "dash");
             currentPos += lineSpace;
             character.crouchEnabled = GUI.Toggle(new Rect(pos.x, currentPos, size.x, 15), character.crouchEnabled, "crouch");
             currentPos += lineSpace;
@@ -110,6 +110,17 @@ namespace CharacterMovementCreator
 
                     break;
                 case advancedSettings.dash:
+                    EditorGUI.BeginDisabledGroup(!character.enableDash);
+                    character.dashSpeed = valueField(currentPos, "dash speed", character.dashSpeed, 0, 100f);
+                    currentPos += 20;
+                    character.dashDuration = valueField(currentPos, "dash duration", character.dashDuration, 0.01f, 1f);
+                    currentPos += 20;
+
+                    GUI.Label(new Rect(pos.x, currentPos, size.x, 15), "Dash style");
+                    currentPos += 20;
+                    character.dashMode = (dashModes)EditorGUI.EnumPopup(new Rect(pos.x, currentPos, size.x / 2, 30), character.dashMode);
+
+                    EditorGUI.EndDisabledGroup();
 
                     break;
                 case advancedSettings.crouch:
@@ -117,7 +128,8 @@ namespace CharacterMovementCreator
                     character.crouchSpeed = valueField(currentPos, "crouch speed", character.crouchSpeed, 0, 20f);
                     currentPos += 20;
                     character.crouchScale = valueField(currentPos, "crouch size scale", character.crouchScale, 0.01f, 1f);
-                    currentPos += 20;
+                    currentPos += 20; 
+
                     EditorGUI.EndDisabledGroup();
 
                     break;
