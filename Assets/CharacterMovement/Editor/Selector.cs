@@ -27,14 +27,6 @@ namespace CharacterMovementCreator
             //draws the simple start point
             Handles.Label(movementClass.transform.position, "Start point");
 
-            //draw idle jump arc
-            //PathCreator.DrawIdleJump(movementClass);
-            //.DrawDoubleIdleJump(movementClass);
-
-            //draw normal jump arc
-            //jumpArc = PathCreator.JumpArc(movementClass);
-            //doubleJumpArc = PathCreator.DoubleJumpArc(movementClass);
-
             if (guibox.selectedSetting == advancedSettings.general)
             {
                 selectedArc = PathCreator.WalkArc(movementClass);
@@ -63,89 +55,13 @@ namespace CharacterMovementCreator
             }
 
         }
-
-        ToggleMenu jumpMenu;
-        ToggleMenu walkMenu;
-
-        void GuiLine(int i_height = 1)
-        {
-            Rect rect = EditorGUILayout.GetControlRect(false, i_height);
-            rect.height = i_height;
-            EditorGUI.DrawRect(rect, new Color(0.5f, 0.5f, 0.5f, 1));
-        }
         public override void OnInspectorGUI()
         {
-            //DrawDefaultInspector();
-            /*
-            UniqueMovement character = (UniqueMovement)target;
-
-            //EditorGUILayout.IntSlider(0, 0, 18);
-
-            GUILayout.Label("Movement options");
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Gravity");
-            character.gravityScale = EditorGUILayout.Slider(character.gravityScale, 0.1f, 10f);
-            GUILayout.EndHorizontal();
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Max fall speed");
-            character.maxFallSpeed = EditorGUILayout.Slider(character.maxFallSpeed, 1, 50f);
-            GUILayout.EndHorizontal();
-
-            GUILayout.Label("General info");
-
-            if (walkMenu == null)
-            {
-                walkMenu = new ToggleMenu("Walk");
-            }
-            walkMenu.Header();
-            if (walkMenu.foldout)
-            {
-                EditorGUI.indentLevel = EditorGUI.indentLevel + 1;
-                GUILayout.BeginHorizontal();
-                GUILayout.Label("Walk speed");
-                character.walkSpeed = EditorGUILayout.Slider(character.walkSpeed, 0, 50f);
-                GUILayout.EndHorizontal();
-                //GUILayout.BeginHorizontal();
-                //GUILayout.Label("Friction");
-                //character.gravityScale = EditorGUILayout.Slider(character.walkSpeed, 0.1f, 10f); //TODO: make friction into script
-                //GUILayout.EndHorizontal();
-                EditorGUI.indentLevel = EditorGUI.indentLevel - 1;
-            }
-            walkMenu.Footer();
-
-            if (jumpMenu == null)
-            {
-                jumpMenu = new ToggleMenu("Jump");
-            }
-            jumpMenu.Header();
-            if (jumpMenu.foldout)
-            {
-                EditorGUI.indentLevel = EditorGUI.indentLevel + 1;
-                GUILayout.BeginHorizontal();
-                GUILayout.Label("Jump speed");
-                character.jumpSpeed = EditorGUILayout.Slider(character.jumpSpeed, 0, 50f);
-                GUILayout.EndHorizontal();
-                GUILayout.BeginHorizontal();
-                GUILayout.Label("Off edge jump duration");
-                character.justInTimeDurationOnGround = EditorGUILayout.Slider(character.justInTimeDurationOnGround, 0, 1f);
-                GUILayout.EndHorizontal();
-                EditorGUI.indentLevel = EditorGUI.indentLevel - 1;
-            }
-            jumpMenu.Footer();
-
-
-            //DrawDefaultInspector();
-            //var levelScript = target as LevelScript;
-            //levelScript.experience = EditorGUILayout.IntField("Experience", levelScript.experience);
-            //EditorGUILayout.LabelField("Level", levelScript.Level + "");
-            //serializedObject.ApplyModifiedProperties();
-            */
+            DrawDefaultInspector();
         }
 
         static public MyGUIBox guibox;
 
-        public float vSbarValue;
         void OnSceneGUI()
         {
             var character = target as UniqueMovement;
@@ -240,9 +156,38 @@ namespace CharacterMovementCreator
                 platformPlacer = new PlatformPlacer();
             }
             var character = target as UniqueMovement;
-            List<Vector3> positions = new List<Vector3> { character.transform.position };
-            positions.Add(selectedArc[selectedArc.Count - 1]);
-            platformPlacer.PlacePlatformObjects(positions, character.GetComponent<BoxCollider2D>());
+
+
+            float height = character.GetComponent<BoxCollider2D>().size.y * character.transform.localScale.y;
+            float width = character.GetComponent<BoxCollider2D>().size.x * character.transform.localScale.x;
+            float platformHeight = .5f;
+
+            if (guibox.selectedSetting == advancedSettings.jump || guibox.selectedSetting == advancedSettings.doubleJump)
+            {
+                //begin and end platform
+                platformPlacer.PlaceGround(character.transform.position + new Vector3(0, -height / 2 + platformHeight / 2), new Vector2(width * 2, platformHeight));
+                platformPlacer.PlaceGround(selectedArc[selectedArc.Count - 1] + new Vector3(0, -height / 2 + platformHeight / 2), new Vector2(width * 2, platformHeight));
+            } else if (guibox.selectedSetting == advancedSettings.general)
+            {
+                //global ground
+                platformPlacer.PlaceGround(selectedArc[(int)Mathf.Floor(selectedArc.Count / 2)] + new Vector3(0, -height / 2 + platformHeight / 2), new Vector2((selectedArc[selectedArc.Count -1].x - selectedArc[0].x) + width * 2, platformHeight));
+            }
+            else if (guibox.selectedSetting == advancedSettings.crouch)
+            {
+                //global ground
+                platformPlacer.PlaceGround(selectedArc[(int)Mathf.Floor(selectedArc.Count / 2)] + new Vector3(0, -height / 2 + platformHeight / 2), new Vector2((selectedArc[selectedArc.Count - 1].x - selectedArc[0].x) + width * 2, 0.5f));
+
+                //ceil
+                platformPlacer.PlaceGround(selectedArc[(int)Mathf.Floor(selectedArc.Count / 2)] + new Vector3(0, height / 2 * character.crouchScale + platformHeight), new Vector2((selectedArc[selectedArc.Count - 1].x - selectedArc[0].x) / 2f, platformHeight));
+            }
+            else if (guibox.selectedSetting == advancedSettings.dash)
+            {
+                //begin and end platform
+                platformPlacer.PlaceGround(character.transform.position + new Vector3(0, -height / 2 + platformHeight / 2), new Vector2(width * 2, platformHeight));
+                platformPlacer.PlaceGround(selectedArc[selectedArc.Count - 1] + new Vector3(0, -height / 2 + platformHeight / 2), new Vector2(width * 2, platformHeight));
+
+                platformPlacer.PlaceGround(selectedArc[(int)Mathf.Floor(selectedArc.Count / 2)] + new Vector3(0, height / 2 + platformHeight * 2f), new Vector2((selectedArc[selectedArc.Count - 1].x - selectedArc[0].x) + width * 2, platformHeight));
+            }
         }
 
         //changes the walkspeed of the movement by selection
@@ -260,45 +205,9 @@ namespace CharacterMovementCreator
                 }
             }
             else {
-
                 character.walkSpeed = 0;
             }
             PathCreator.xJumpDistance = handlerPos;
         }
-    }
-    public class ToggleMenu
-    {
-        public bool foldout = false;
-        public bool enabled = true;
-        public string name;
-        public ToggleMenu(string _name)
-        {
-            name = _name;
-        }
-        public void Header()
-        {
-            GUILayout.Space(10);
-            GUILayout.BeginHorizontal();
-
-            foldout = EditorGUILayout.Foldout(foldout, name);
-            enabled = EditorGUILayout.Toggle(enabled);
-            GUILayout.FlexibleSpace();
-            GUILayout.EndHorizontal();
-            GuiLine();
-        }
-        public void Footer()
-        {
-            if (foldout && enabled)
-            {
-                GuiLine();
-            }
-        }
-        void GuiLine(int i_height = 1)
-        {
-            Rect rect = EditorGUILayout.GetControlRect(false, i_height);
-            rect.height = i_height;
-            EditorGUI.DrawRect(rect, new Color(0.5f, 0.5f, 0.5f, 1));
-        }
-
     }
 }

@@ -87,7 +87,7 @@ public class UniqueMovement : MonoBehaviour
     }
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        StopAllCoroutines();
+        //if (dashing)
         inAir = false;
         deltaMovement.y = 0;
         doubleJumpIndex = 0;
@@ -119,10 +119,20 @@ public class UniqueMovement : MonoBehaviour
     }
     private void Dash(Vector2 input)
     {
-        if (dashing) { return; }
+        if (dashing || !enableDash) { return; }
         dashing = true;
 
         deltaMovement = new Vector2(0, 0);
+        if (input.x == 0)
+        {
+            if (transform.localScale.x < 0)
+            {
+                deltaMovement.x = -dashSpeed;
+            } else
+            {
+                deltaMovement.x = dashSpeed;
+            }
+        } 
         switch (dashMode) {
             case (dashModes.horizontalLine):
                 if (input.x < 0)
@@ -169,10 +179,13 @@ public class UniqueMovement : MonoBehaviour
     IEnumerator Dashing()
     {
         yield return new WaitForSeconds(dashDuration);
+        StopDash();
+    }
+    private void StopDash()
+    {
         deltaMovement.x = 0;
         deltaMovement.y = 0;
         dashing = false;
-
     }
 
     private void Update()

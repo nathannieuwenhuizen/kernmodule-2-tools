@@ -152,24 +152,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a6e81a55e1d6000439b434ba3b1c82cb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  walkSpeed: 8.741216
+  walkSpeed: 8.002683
   jumpEnabled: 1
-  jumpSpeed: 13.455144
+  jumpSpeed: 16.164707
   gravityScale: 0.8168958
   maxFallSpeed: 29.87
   justInTimeDurationOnGround: 1
   doubleJumpEnabled: 1
   amountOfDoubleJumps: 1
-  doubleJumpSpeed: 10
+  doubleJumpSpeed: 6.1164947
   faceToDirection: 1
   originScale: {x: 0, y: 0, z: 0}
   crouchEnabled: 1
   crouching: 0
-  crouchSpeed: 2.8168685
-  crouchScale: 0.4701381
+  crouchSpeed: 13.943611
+  crouchScale: 1
   enableDash: 1
-  dashSpeed: 19.02964
-  dashDuration: 0.17035054
+  dashSpeed: 16.916964
+  dashDuration: 0.26098433
   dashMode: 2
 --- !u!61 &364563679
 BoxCollider2D:
@@ -275,8 +275,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 364563677}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.15, y: 1.15, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 2.43, y: 0.93, z: 0}
+  m_LocalScale: {x: 0.97474, y: 0.97474, z: 0.97474}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 2
