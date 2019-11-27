@@ -60,10 +60,12 @@ namespace CharacterMovementCreator
             Handles.BeginGUI();
 
             GUI.color = new Color(.8f, 1.0f, .8f, 0.9f);
+            GUI.skin.box.fontStyle = FontStyle.Bold;
             GUI.Box(new Rect(pos.x, pos.y, size.x, size.y), "Settings");
             GUI.color = Color.white;
             float currentPos = pos.y;
 
+        
             currentPos += lineSpace;
             character.jumpEnabled = GUI.Toggle(new Rect(pos.x + horizontalOffset, currentPos, size.x, 15), character.jumpEnabled, "jump");
             currentPos += lineSpace;
@@ -74,21 +76,30 @@ namespace CharacterMovementCreator
             character.crouchEnabled = GUI.Toggle(new Rect(pos.x + horizontalOffset, currentPos, size.x, 15), character.crouchEnabled, "crouch");
             currentPos += lineSpace;
 
+            GUI.color = Color.gray;
             GUI.Label(new Rect(pos.x + horizontalOffset, currentPos, size.x - horizontalOffset * 2, 15), "", GUI.skin.horizontalSlider);
+            GUI.color = Color.white;
+
             currentPos += 30;
+            GUI.skin.label.fontStyle = FontStyle.Bold;
             GUI.Label(new Rect(pos.x + horizontalOffset, currentPos, size.x, 15), "Advanced settings");
+            GUI.skin.label.fontStyle = FontStyle.Normal;
+
             currentPos += lineSpace;
 
             GUI.backgroundColor = Color.yellow;
             selectedSetting = (advancedSettings)EditorGUI.EnumPopup(new Rect(pos.x + horizontalOffset * 2, currentPos, size.x - horizontalOffset * 4, 30), selectedSetting);
             GUI.backgroundColor = Color.white;
-
             GUI.skin.label.normal.textColor = new Color(0.2f, 0.2f, 0f);
 
             currentPos += 20;
             switch (selectedSetting)
             {
                 case advancedSettings.general:
+                    character.gravityScale = valueField(currentPos, "gravity", character.gravityScale, 0, 2f);
+                    currentPos += 20;
+                    character.maxFallSpeed = valueField(currentPos, "max fall speed", character.maxFallSpeed, 1, 200f);
+                    currentPos += 20;
                     character.walkSpeed = valueField(currentPos, "walk speed", character.walkSpeed, 0, 50f);
                     currentPos += 25;
                     character.faceToDirection = GUI.Toggle(new Rect(pos.x + horizontalOffset, currentPos, size.x, 15), character.faceToDirection, "Faces direction");
@@ -99,15 +110,19 @@ namespace CharacterMovementCreator
                     currentPos += 20;
                     character.maxFallSpeed = valueField(currentPos, "max fall speed", character.maxFallSpeed, 1, 200f);
                     currentPos += 20;
+                    character.jumpSpeed = valueField(currentPos, "jump speed", character.jumpSpeed, 0, 50f);
+                    currentPos += 20;
                     character.justInTimeDurationOnGround = valueField(currentPos, "Off edge duration", character.justInTimeDurationOnGround, 0, .5f);
                     currentPos += 20;
                     EditorGUI.EndDisabledGroup();
                     break;
                 case advancedSettings.doubleJump:
                     EditorGUI.BeginDisabledGroup(!character.doubleJumpEnabled);
+                    character.gravityScale = valueField(currentPos, "gravity", character.gravityScale, 0, 2f);
+                    currentPos += 20;
                     character.doubleJumpSpeed = valueField(currentPos, "double jump speed", character.doubleJumpSpeed, 0, 50f);
                     currentPos += 25;
-                    character.amountOfDoubleJumps = valueField(currentPos, "amount of jumps", character.amountOfDoubleJumps, 1, 10);
+                    character.amountOfDoubleJumps = valueField(currentPos, "amount", character.amountOfDoubleJumps, 1, 10);
                     EditorGUI.EndDisabledGroup();
 
                     break;
@@ -140,8 +155,11 @@ namespace CharacterMovementCreator
             }
             GUI.skin.button.normal.textColor = Color.black;
 
+            GUI.color = Color.gray;
             GUI.Label(new Rect(pos.x + horizontalOffset, pos.y + size.y - 70, size.x - horizontalOffset * 2, 15), "", GUI.skin.horizontalSlider);
+            GUI.color = Color.white;
 
+            GUI.skin.button.fontStyle = FontStyle.Bold;
             GUI.backgroundColor = new Color(0f, 0f, 0.5f);
             GUI.skin.button.normal.textColor = Color.white;
 
@@ -150,7 +168,7 @@ namespace CharacterMovementCreator
                 simulating.Invoke();
             }
 
-            if (GUI.Button(new Rect(pos.x + horizontalOffset, pos.y + size.y - 25, size.x - horizontalOffset * 2, 20), "Spawn platforms!"))
+            if (GUI.Button(new Rect(pos.x + horizontalOffset, pos.y + size.y - 25, size.x - horizontalOffset * 2, 20), "Spawn platforms"))
             {
                 spawning.Invoke();
             }

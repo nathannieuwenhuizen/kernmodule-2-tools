@@ -86,7 +86,7 @@ namespace CharacterMovementCreator
                         transform.rotation);
                     if (cc.changed)
                     {
-                        character.jumpSpeed = PathCreator.SetJumpUnits(jumpHandeler.y - character.transform.position.y, character);
+                        character.jumpSpeed = Mathf.Max(1f, PathCreator.SetJumpUnits(jumpHandeler.y - character.transform.position.y, character));
                         changeWalkSpeed(character, Mathf.Max((jumpHandeler.x - transform.position.x), 0));
                     }
                 }
@@ -102,7 +102,7 @@ namespace CharacterMovementCreator
                         transform.rotation);
                     if (cc.changed)
                     {
-                        character.doubleJumpSpeed = PathCreator.SetJumpUnits(doubleJumpHandeler.y - (character.transform.position.y + PathCreator.GetJumpUnits(character)), character);
+                        character.doubleJumpSpeed = Mathf.Max(0, PathCreator.SetJumpUnits(doubleJumpHandeler.y - (character.transform.position.y + PathCreator.GetJumpUnits(character)), character));
                     }
                 }
             }
@@ -132,7 +132,7 @@ namespace CharacterMovementCreator
                         transform.rotation);
                     if (cc.changed)
                     {
-                        character.dashSpeed = PathCreator.SetDashUnits(dashHandeler.x - character.transform.position.x, character);
+                        character.dashSpeed = Mathf.Max(0, PathCreator.SetDashUnits(dashHandeler.x - character.transform.position.x, character));
                     }
                 }
             }

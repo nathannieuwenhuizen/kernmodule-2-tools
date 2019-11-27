@@ -46,17 +46,17 @@ namespace CharacterMovementCreator
             SetSize(size, sr);
 
             //position and hierarchy
-            if (parent != null)
+            if (parent == null)
             {
-                obj.transform.SetParent(parent.transform);
                 //create an empty parent object if there is none.
                 parent = GameObject.Find(parentName);
                 if (parent == null)
                 {
                     parent = new GameObject(parentName);
                 }
-
             }
+            obj.transform.SetParent(parent.transform);
+
             pos.y -= heightOffset / 2 + obj.GetComponent<BoxCollider2D>().size.y / 2;
             if (rounded)
             {
