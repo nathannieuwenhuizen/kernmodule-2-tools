@@ -87,7 +87,6 @@ public class UniqueMovement : MonoBehaviour
     }
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        //if (dashing)
         inAir = false;
         deltaMovement.y = 0;
         doubleJumpIndex = 0;
@@ -117,6 +116,7 @@ public class UniqueMovement : MonoBehaviour
             deltaMovement.y = doubleJumpSpeed;
         }
     }
+
     private void Dash(Vector2 input)
     {
         if (dashing || !enableDash) { return; }
