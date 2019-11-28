@@ -17,6 +17,7 @@ namespace CharacterMovementCreator
         static public float xWalkDistance;
         static public float xDashDistance;
         static public float xCrouchDistance;
+
         //Calculates and draws the jump arc
         static public List<Vector3> JumpArc(UniqueMovement movementClass)
         {
@@ -31,7 +32,7 @@ namespace CharacterMovementCreator
             return positions;
         }
 
-        //Calculates and draws the jump arc
+        //Calculates and draws the double jump arc
         static public List<Vector3> DoubleJumpArc(UniqueMovement movementClass)
         {
             List<Vector3> positions = CalculateDoubleJumpArc(movementClass);
@@ -60,7 +61,7 @@ namespace CharacterMovementCreator
         }
 
 
-        //Calculates and draws the walk arc
+        //Calculates and draws the crouch arc
         static public List<Vector3> CrouchArc(UniqueMovement movementClass)
         {
             List<Vector3> positions = CalculateCrouchArc(movementClass);
@@ -75,7 +76,7 @@ namespace CharacterMovementCreator
         }
 
 
-        //Calculates and draws the walk arc
+        //Calculates and draws the dash arc arc (only right)
         static public List<Vector3> DashArc(UniqueMovement movementClass)
         {
             List<Vector3> positions = CalculateDashArc(movementClass);
@@ -113,7 +114,6 @@ namespace CharacterMovementCreator
                 {
                     Handles.DrawWireDisc(movementClass.transform.position, Vector3.forward, xDashDistance);
                 }
-                //Handles.DrawAAPolyLine(positions.ToArray());
                 xCrouchDistance = positions[positions.Count - 1].x - movementClass.transform.position.x;
 
                 LabelUnits("Dash distance", positions[positions.Count - 1], xDashDistance);
@@ -121,7 +121,6 @@ namespace CharacterMovementCreator
             return positions;
         }
 
-        //calculates and returns the jump arc of a given movement
         static List<Vector3> CalculateJumpArc(UniqueMovement movementClass)
         {
             Vector3 pos = movementClass.transform.position;
@@ -185,8 +184,8 @@ namespace CharacterMovementCreator
             }
             xDashDistance = pos.x - movementClass.transform.position.x;
             return positions;
-
         }
+
         static List<Vector3> CalculateCrouchArc(UniqueMovement movementClass)
         {
             Vector3 pos = movementClass.transform.position;
@@ -205,7 +204,6 @@ namespace CharacterMovementCreator
 
         }
 
-        //calculates and returns the double jump arc of a given movement
         static List<Vector3> CalculateDoubleJumpArc(UniqueMovement movementClass)
         {
             Vector3 pos = movementClass.transform.position;
@@ -244,7 +242,7 @@ namespace CharacterMovementCreator
 
 
         //round to decimals
-        static float RoundToDecimals(float val, int amount)
+        public static float RoundToDecimals(float val, int amount)
         {
             float pow = Mathf.Pow(10, amount);
             return Mathf.Round(val * pow) / pow;

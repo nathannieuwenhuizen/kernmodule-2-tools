@@ -14,36 +14,37 @@ namespace CharacterMovementCreator
         dash,
     }
 
+    /// <summary>
+    /// THis guibox is for the advanced setting that couldnt be implemented into the selector handler
+    /// </summary>
     public class MyGUIBox
     {
-        public float hSliderValue;
+        //position and size of the box
         public Vector2 pos;
         public Vector2 size;
 
+        //events
         public delegate void simulateEvent();
         public simulateEvent simulating;
         public delegate void spawnEvent();
         public spawnEvent spawning;
+
+        //to make it more fancy!
         public GUIStyle style;
         public float horizontalOffset = 5;
 
         public advancedSettings selectedSetting = advancedSettings.general;
 
-        //round to decimals
-        static float RoundToDecimals(float val, int amount)
-        {
-            float pow = Mathf.Pow(10, amount);
-            return Mathf.Round(val * pow) / pow;
-        }
-
+        //to get the label and field next to each other
         public float valueField(float yPos, string header, float val, float min, float max)
         {
-            GUI.Label(new Rect(pos.x + horizontalOffset, yPos, size.x - horizontalOffset * 2, 15), header + " " + RoundToDecimals(val, 2));
+            GUI.Label(new Rect(pos.x + horizontalOffset, yPos, size.x - horizontalOffset * 2, 15), header + " " + PathCreator.RoundToDecimals(val, 2));
             float value = GUI.HorizontalSlider(new Rect(pos.x + horizontalOffset, yPos + 10, size.x - horizontalOffset * 2, 15), val, min, max);
             EditorGUIUtility.AddCursorRect(new Rect(pos.x + horizontalOffset, yPos + 10, size.x - horizontalOffset * 2, 15), MouseCursor.Link);
             return value;
         }
 
+        //to get the label and field next to each other
         public int valueField(float yPos, string header, int val, int min, int max)
         {
             GUI.Label(new Rect(pos.x + horizontalOffset, yPos, size.x - horizontalOffset * 2, 15), header);
@@ -51,6 +52,8 @@ namespace CharacterMovementCreator
             EditorGUIUtility.AddCursorRect(new Rect(pos.x + horizontalOffset, yPos + 10, size.x - horizontalOffset * 2, 15), MouseCursor.Link);
             return value;
         }
+
+        //draw function of the box
         public void Draw(UniqueMovement character)
         {
             float lineSpace = 15;

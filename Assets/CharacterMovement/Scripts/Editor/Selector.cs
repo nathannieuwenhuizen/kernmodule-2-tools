@@ -26,32 +26,37 @@ namespace CharacterMovementCreator
         {
             //draws the simple start point
             Handles.Label(movementClass.transform.position, "Start point");
+            if (guibox != null)
+            {
+                if (guibox.selectedSetting == advancedSettings.general)
+                {
+                    selectedArc = PathCreator.WalkArc(movementClass);
+                }
+                if (guibox.selectedSetting == advancedSettings.jump)
+                {
+                    //draw jump arc
+                    PathCreator.DrawIdleJump(movementClass);
+                    jumpArc = PathCreator.JumpArc(movementClass);
+                    selectedArc = jumpArc;
 
-            if (guibox.selectedSetting == advancedSettings.general)
+                }
+                if (guibox.selectedSetting == advancedSettings.doubleJump)
+                {
+                    PathCreator.DrawDoubleIdleJump(movementClass);
+                    doubleJumpArc = PathCreator.DoubleJumpArc(movementClass);
+                    selectedArc = doubleJumpArc;
+                }
+                if (guibox.selectedSetting == advancedSettings.dash)
+                {
+                    selectedArc = PathCreator.DashArc(movementClass);
+                }
+                if (guibox.selectedSetting == advancedSettings.crouch)
+                {
+                    selectedArc = PathCreator.CrouchArc(movementClass);
+                }
+            } else
             {
                 selectedArc = PathCreator.WalkArc(movementClass);
-            }
-            if (guibox.selectedSetting == advancedSettings.jump)
-            {
-                //draw jump arc
-                PathCreator.DrawIdleJump(movementClass);
-                jumpArc = PathCreator.JumpArc(movementClass);
-                selectedArc = jumpArc;
-
-            }
-            if (guibox.selectedSetting == advancedSettings.doubleJump)
-            {
-                PathCreator.DrawDoubleIdleJump(movementClass);
-                doubleJumpArc = PathCreator.DoubleJumpArc(movementClass);
-                selectedArc = doubleJumpArc;
-            }
-            if (guibox.selectedSetting == advancedSettings.dash)
-            {
-                selectedArc = PathCreator.DashArc(movementClass);
-            }
-            if (guibox.selectedSetting == advancedSettings.crouch)
-            {
-                selectedArc = PathCreator.CrouchArc(movementClass);
             }
 
         }
