@@ -39,7 +39,7 @@ namespace CharacterMovementCreator
 
             //adding the components
             SpriteRenderer sr = obj.AddComponent<SpriteRenderer>();
-            sr.sprite = (Sprite)AssetDatabase.LoadAssetAtPath("Assets/CharacterMovement/test_sprite.jpg", typeof(Sprite));
+            sr.sprite = (Sprite)AssetDatabase.LoadAssetAtPath("Assets/CharacterMovement/Sprites/test_sprite.jpg", typeof(Sprite));
             obj.AddComponent<BoxCollider2D>();
 
             //sets the size of the platform

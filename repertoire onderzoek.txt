@@ -1,0 +1,56 @@
+---Intro---
+
+Ik heb eerst nagedacht over verschillende problemen tijdens development die ik vaak tegenkom en daarbij een tool bij bedenk om het probleem op te lossen.
+
+Deze zijn het volgende:
+-Een 2d platform movement tool waarin je een platform movement script kunt genereren met visualisaties
+-Een minimap generator tool
+-Een positie scale afrodinding tool om de scene meer te organiseren
+-dynamic weather system
+-Debug testing tool om de progressie van de speler te samenvatten en deathpoints weer te geven
+-Een 2D camera focus tool.
+
+Uiteindelijk heb ik gekozen voor de 2d platformer tool omdat ik die probleem vaak tegenkom en niet echt een bestaande oplossing voor heb.
+
+
+
+---Repertoire onderzoek---
+
+Ik heb eerst gekeken wat allemaal in unity al bestaat en dat zijn de CharacterController en de rigidbody/collider systemen. Het voordeel van deze aanpakken zijn dat je er erg diep in kan komen en veel unieke movement mee kan creeeren, het nadeel is dat je aardig wat code moet gaan scripten en wat tijd kost.
+
+Verder heb ik bij de assets store een aantal packages uitgeprobeerd die platform controllers hebben. 
+Deze zijn: 
+Awesome movemement: https://assetstore.unity.com/detail/tools/awesome-movement-30008
+Character movement fundamentals: https://assetstore.unity.com/detail/tools/physics/character-movement-fundamentals-144966
+Het voordeel is dat je meteen een goedwerkende character movement heb die je kuntgebruiken. Nadeel is dat het gelimiteerd is tot maar een paar movement. Dit wil zeggen dat je niet veel kan expirementeren.
+
+Uiteindelijk kwam ik er een tegen die erg leek op wat ik zelf in gedachte had:
+Advanced character movement 2d: https://assetstore.unity.com/detail/tools/physics/advanced-character-movement-2d-147191
+Deze geeft alle waardes die een developer kan invoeren zoals walljumps, friction, gravity en nog meer. Ik heb het helaas niet kunnen uittesten omdat het geld kost en kon er geen film clip ervan zien hoe het werkt.
+Het nadeel is waarschijnlijk dat dit een gewone geavanceerde script is die niks genereerd allen waardes activeerd en deactiveerd. Het is denk ik daardoor complex om er in te komen. 
+
+
+
+---Doel---
+
+Deze tool zal in het begin van development helpen om snel een character platform movement te genereren wat handig kan zijn bij game jams.
+Verder kan deze tool ook designers helpen om te expirementeren met waardes zodat er interresant gameplay naar boven kan komen. Daarom ga ik ook in de editor een random value knop maken.
+
+
+
+
+---Bescrijving tool---
+
+Dus wat is deze 2d character movement tool?
+
+Deze tool helpt je met het designen en aanmaken van een 2d platformer movement.
+Je kunt niet alleen de waardes van de loopsnelheid en spring waardes veranderen, maar ook of het een dubble jump heeft,
+kan wall jumpen, of het can kruipen, of het kan dashen in éen richting of vier/alle rightingen, klimmen, zweven, sneller kan vallen etc.
+
+Als je de waardes in de editor window invoert, maakt het een prefab aan met een eigen script die deze movement heeft.
+Deze gegenereerde script krijgt alleen de code die noodzakelijk zijn voor de movement, dus als de movement geen dubbel jump heeft, staat die functionaliteit ook niet in de script.
+
+Als extra wil ik ook berekeningen doen in de editor wat de verste en hoogste afstanden zijn die de character kan springen in units en daarbij extra prefabs erbij maakt zodat je preciezere level design kan hebben.
+Deze berekeningen worden met een arc in de editor window laten zijn.
+Als ik tijd over heb, wil ik dat de tool bestaande movement scripts kan inladen die eerder gegenereerd zijn en die kunnen aanpassen.
+
